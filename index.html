@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>РяДОМ: маршруты творчества в Красноуфимске</title>
+  <!-- Подключаем шрифты и иконки -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=dfbe4a0e-f0fb-4338-b7f5-aed929b5889b&lang=ru_RU" type="text/javascript">
+    // ===== Переключение вкладок на странице мастера =====
+    function switchTab(tabId) {
+      // Скрыть все вкладки
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      // Показать нужную
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      
+      // Обновить активную кнопку
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.tab-btn[data-tab="${tabId}"]`)?.classList.add('active');
+}
+  </script>
+  <style>
+    /* --- Базовые сбросы и переменные --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #faf8f5; color: #2d2a24; line-height: 1.5; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* --- Цветовая схема (под старину/ремесла) --- */
+    :root {
+      --accent: #b45f3b;
+      --accent-light: #d48b6a;
+      --accent-dark: #7a4026;
+      --bg-light: #fdf9f4;
+      --border-color: #e5ddd4;
+      --shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    /* --- Шапка (навигация) --- */
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--accent-dark);
+    }
+    .logo span { color: var(--accent); }
+    nav ul {
+      display: flex;
+      gap: 28px;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    nav ul li a {
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: 0.2s;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      border-bottom-color: var(--accent);
+      color: var(--accent-dark);
+    }
+    .burger {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--accent-dark);
+    }
+
+    /* --- Секции общие --- */
+    section { padding: 60px 0; }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--accent-dark);
+      position: relative;
+      display: inline-block;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--accent);
+    }
+    .text-center { text-align: center; }
+    .text-center .section-title::after { left: 50%; transform: translateX(-50%); }
+
+    /* --- Главный экран (Hero) --- */
+    .hero {
+      background: linear-gradient(135deg, #f3ede7 0%, #e8ddd2 100%);
+      padding: 80px 0 70px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .hero-grid {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-text { flex: 1 1 400px; }
+    .hero-text h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--accent-dark);
+      margin-bottom: 20px;
+    }
+    .hero-text h1 i { color: var(--accent); font-style: normal; }
+    .hero-text p {
+      font-size: 1.2rem;
+      color: #4d3e30;
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .btn {
+      display: inline-block;
+      background: white;
+      padding: 14px 32px;
+      border-radius: 60px;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      transition: 0.2s;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      font-size: 0.95rem;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+    .btn-outline:hover { background: white; box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+    .btn-accent { background: var(--accent-dark); color: white; border-color: var(--accent-dark); }
+    .btn-accent:hover { background: #5f331e; }
+
+    .hero-image {
+      flex: 1 1 450px;
+      background: #dccfc3;
+      height: 370px;
+      border-radius: 40px 40px 40px 8px;
+      background-image: url('images/Красноуфимск.jpg');
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    /* --- Блок "О проекте" (тезисы) --- */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      margin-top: 10px;
+    }
+    .about-card {
+      background: white;
+      padding: 28px 22px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: 0.2s;
+    }
+    .about-card:hover { transform: translateY(-4px); }
+    .about-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--accent-dark); }
+    .about-card h3 i { margin-right: 10px; color: var(--accent); }
+    .about-card p { color: #4d4a44; font-size: 0.95rem; }
+
+    /* --- Карта (заглушка) --- */
+    .map-placeholder {
+      background: #e8e0d7;
+      border-radius: 30px;
+      padding: 50px 20px;
+      text-align: center;
+      border: 2px dashed var(--accent-light);
+      color: var(--accent-dark);
+      font-weight: 500;
+      margin: 20px 0 10px;
+    }
+    .map-placeholder i { font-size: 2.5rem; display: block; margin-bottom: 12px; color: var(--accent); }
+
+    /* --- Мастер недели --- */
+    .master-week {
+      display: flex;
+      flex-wrap: wrap;
+      background: white;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      margin: 20px 0;
+    }
+    .master-week-img {
+      flex: 1 1 260px;
+      min-height: 280px;
+      background: #d9cdbf;
+      background-image: url('images/Наталья Пантелеева.jpg');
+      background-size: cover;
+      background-position: 30% 30%;
+    }
+    .master-week-info {
+      flex: 2 1 300px;
+      padding: 30px 35px;
+    }
+    .master-week-info h3 { font-size: 1.8rem; color: var(--accent-dark); margin-bottom: 6px; }
+    .master-week-info .sub { color: var(--accent); font-weight: 600; font-size: 1.1rem; }
+    .master-week-info p { margin: 15px 0 20px; color: #3d3a34; }
+
+    /* --- Карточки анонсов МК --- */
+    .mk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-top: 10px;
+    }
+    .mk-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: 0.2s;
+    }
+    .mk-card:hover { transform: translateY(-6px); }
+    .mk-img {
+      height: 180px;
+      background: #d4c9bc;
+      background-size: cover;
+      background-position: 30% 30%;
+    }
+    .mk-body { padding: 20px 22px 24px; }
+    .mk-body h4 { font-size: 1.2rem; margin-bottom: 6px; }
+    .mk-body .meta { color: #7a6e60; font-size: 0.9rem; margin-bottom: 8px; }
+    .mk-body .meta i { margin-right: 6px; }
+    .mk-body .price { font-weight: 700; color: var(--accent-dark); font-size: 1.1rem; }
+
+    /* --- История ремёсел (карточки статей) --- */
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+    }
+    .history-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+    .history-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #cfc2b4;
+    }
+    .history-card .body { padding: 18px 20px 22px; }
+    .history-card .body h4 { font-size: 1.1rem; margin-bottom: 6px; }
+
+    /* --- Страницы (скрыты по умолчанию) --- */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* --- Страница "Мастера" (каталог) --- */
+    .masters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 25px;
+      margin: 25px 0;
+    }
+    .master-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .master-card:hover { transform: scale(1.01); }
+    .master-card .avatar {
+      height: 180px;
+      background: #d5c9bb;
+      background-size: cover;
+      background-position: center;
+    }
+    .master-card .info { padding: 18px 20px 22px; }
+    .master-card .info h4 { font-size: 1.1rem; }
+    .master-card .info .craft { color: var(--accent); font-weight: 500; }
+    .master-card .info .loc { font-size: 0.9rem; color: #6b6258; }
+
+    /* --- Страница мастера (персональная) --- */
+    .master-profile {
+      background: white;
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+    .profile-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 60px;
+      background: #d5c9bb;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+    .profile-header h2 { font-size: 2rem; }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      color: #5f5548;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: 0.2s;
+    }
+    .tab-btn.active { border-bottom-color: var(--accent); color: var(--accent-dark); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* --- Страница "Маршруты" --- */
+    .route-card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+    }
+    .route-card .route-map {
+      width: 120px;
+      height: 90px;
+      background: #d4c9bc;
+      border-radius: 16px;
+      flex-shrink: 0;
+      background-size: cover;
+    }
+
+    /* --- Форма заявки "Стать мастером" --- */
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      font-size: 1rem;
+      background: white;
+    }
+    .form-group textarea { min-height: 120px; }
+
+    /* --- Футер --- */
+    footer {
+      background: #2d2a24;
+      color: #cfc7bc;
+      padding: 40px 0;
+      margin-top: 40px;
+    }
+    footer a { color: #dccfc3; }
+    footer a:hover { color: white; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 30px;
+    }
+
+    /* --- Адаптив --- */
+    @media (max-width: 768px) {
+      .burger { display: block; }
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: white;
+        padding: 20px;
+        width: 100%;
+        gap: 14px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 12px;
+      }
+      nav ul.open { display: flex; }
+      .hero-text h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== ШАПКА ===== -->
+<header>
+  <div class="container header-inner">
+    <div class="logo">Ря<span>ДОМ</span>: маршруты творчества</div>
+    <div class="burger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+    <nav>
+      <ul id="navMenu">
+        <li><a href="#" class="active" data-page="page-main">Главная</a></li>
+        <li><a href="#" data-page="page-masters">Мастера</a></li>
+        <li><a href="#" data-page="page-routes">Маршруты</a></li>
+        <li><a href="#" data-page="page-history">История ремёсел</a></li>
+        <li><a href="#" data-page="page-apply">Стать мастером</a></li>
+        <li><a href="#" data-page="page-contacts">Контакты</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== ГЛАВНАЯ СТРАНИЦА ===== -->
+<div id="page-main" class="page active">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <h1>Красноуфимск мастеровой — <i>люди, которые создают город своими руками</i></h1>
+        <p>Ремесленники, традиции, маршруты творчества — в одном месте.</p>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary" onclick="switchPage('page-masters'); return false;">Найти мастера</a>
+          <a href="#" class="btn btn-outline" onclick="switchPage('page-routes'); return false;">Посмотреть маршруты</a>
+          <a href="#" class="btn btn-accent" onclick="switchPage('page-apply'); return false;">Стать мастером</a>
+        </div>
+      </div>
+      <div class="hero-image" title="Красноуфимск"></div>
+    </div>
+  </section>
+
+  <!-- О проекте -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">О проекте</h2>
+      <div class="about-grid">
+        <div class="about-card"><h3><i class="fas fa-map-pin"></i> Красноуфимск мастеровой</h3><p>Мы собираем на одной карте всех ремесленников города и района.</p></div>
+        <div class="about-card"><h3><i class="fas fa-headphones"></i> Истории, которые хочется слушать</h3><p>Рассказываем, как мастера пришли в своё дело и что хранят семейные и народные традиции.</p></div>
+        <div class="about-card"><h3><i class="fas fa-route"></i> Маршруты творчества</h3><p>Стройте собственные маршруты или выбирайте готовые — чтобы увидеть и попробовать ремесло своими руками.</p></div>
+        <div class="about-card"><h3><i class="fas fa-heart"></i> Поддерживаем тех, кто создаёт город</h3><p>Помогаем мастерам быть заметнее, а жителям и туристам — находить уникальные вещи и впечатления.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Карта -->
+  <section style="padding-top: 0;">
+  <div class="container">
+    <h2 class="section-title">Карта ремесленников</h2>
+    <div id="map" style="width: 100%; height: 450px; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow);"></div>
+  </div>
+</section>
+
+<script type="text/javascript">
+  ymaps.ready(function() {
+    // Создаём карту
+    var map = new ymaps.Map("map", {
+      center: [56.6068, 57.7668],
+      zoom: 13,
+      controls: ["zoomControl", "fullscreenControl"]
+    });
+    
+    // === СПИСОК МАСТЕРОВ С КООРДИНАТАМИ ===
+    var masters = [
+      {
+        name: "Мир удивительных пряников",
+        address: "ул. Советская, 38",
+        coords: [56.615312, 57.766524],
+        craft: "Печатные пряники"
+      },
+      {
+        name: "Керамика с Урала",
+        address: "Площадь Искусств",
+        coords: [56.621551, 57.775022],
+        craft: "Гончарное дело"
+      },
+      {
+        name: "Кожевенная школа",
+        address: "Парк им. Блюхера",
+        coords: [56.618361, 57.774751],
+        craft: "Кожевенное ремесло"
+      },
+      {
+        name: "Елена Илюшкина",
+        address: "Площадь Искусств",
+        coords: [56.621761, 57.775332],
+        craft: "Марийские танцы"
+      }
+    ];
+    
+    // Добавляем метки на карту
+    masters.forEach(function(master) {
+      var placemark = new ymaps.Placemark(
+        master.coords,
+        {
+          balloonContent: '<b>' + master.name + '</b><br>' + 
+                          master.craft + '<br>' + 
+                          master.address,
+          // Иконка с номером или буквой
+          // iconContent: '⭐'
+        },
+        {
+          // Опции метки
+          preset: 'islands#blueCircleIcon',  // Стиль метки
+          // preset: 'islands#redDotIconWithCaption', // Другой стиль
+        }
+      );
+      
+      // Добавляем метку на карту
+      map.geoObjects.add(placemark);
+    });
+  });
+</script>
+
+  <!-- Мастер недели -->
+  <section style="padding-top: 0;">
+    <div class="container">
+      <h2 class="section-title">Мастер недели</h2>
+      <div class="master-week">
+        <div class="master-week-img"></div>
+        <div class="master-week-info">
+          <h3>Наталья Пантелеева</h3>
+          <div class="sub">Мир удивительных пряников — «ПряничОК»</div>
+          <p>Красноуфимские печатные пряники. Это здесь! «ПряничОК» — уютный уголок, где витает аромат сладостей и счастья. Легендарные печатные пряники «Красноуфимский гостинец», мастер-классы, сладкие подарки на заказ.</p>
+          <p><i class="fas fa-map-pin"></i> г. Красноуфимск, ул. Советская, 38 (2-й павильон)<br><i class="fas fa-phone"></i> 8 909 009-55-43</p>
+          <a href="#" class="btn btn-primary" onclick="switchPage('page-masters'); return false;">Узнать больше</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Анонсы мастер-классов -->
+  <section style="padding-top: 0;">
+    <div class="container">
+      <h2 class="section-title">Ближайшие мастер-классы</h2>
+      <div class="mk-grid">
+        <!-- 1 -->
+        <div class="mk-card">
+          <div class="mk-img" style="background-image: url('images/Керамика\ с\ Урала.jpg');"></div>
+          <div class="mk-body">
+            <h4>Керамика с Урала</h4>
+            <div class="meta"><i class="far fa-calendar"></i> 27 июня, День города</div>
+            <div class="meta"><i class="fas fa-map-pin"></i> Площадь Искусств</div>
+            <p>Фигурка — 400₽, тарелка/кружка — 1000₽. Все материалы включены.</p>
+            <div class="price">Запись: 8 912 041-16-68</div>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="mk-card">
+          <div class="mk-img" style="background-image: url('images/Кожевенная\ школа.jpg');"></div>
+          <div class="mk-body">
+            <h4>Кожевенная школа</h4>
+            <div class="meta"><i class="far fa-calendar"></i> 27 июня, 10:00</div>
+            <div class="meta"><i class="fas fa-map-pin"></i> Парк им. Блюхера</div>
+            <p>Создайте стильный браслет из натуральной кожи.</p>
+            <div class="price">Вход свободный</div>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="mk-card">
+          <div class="mk-img" style="background-image: url('images/Марийские\ танцы.jpg');"></div>
+          <div class="mk-body">
+            <h4>Марийские танцы</h4>
+            <div class="meta"><i class="far fa-calendar"></i> 27 июня, площадь Искусств</div>
+            <div class="meta"><i class="fas fa-user"></i> Елена Илюшкина</div>
+            <p>Базовые шаги, марийская дробь («тывырдык») и национальный ритм.</p>
+            <div class="price">Участие бесплатно</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- История ремёсел (анонсы) -->
+  <section style="padding-top: 0;">
+    <div class="container">
+      <h2 class="section-title">История ремёсел</h2>
+      <div class="history-grid">
+        <div class="history-card">
+          <img src="images/Марий.jpg" alt="Марийские традиции">
+          <div class="body"><h4>Марийские традиции района</h4><p>Обряды, орнамент, промыслы.</p></div>
+        </div>
+        <div class="history-card">
+          <img src="images/Иконопись.jpg" alt="Старообрядческая иконопись">
+          <div class="body"><h4>Старообрядческая иконопись</h4><p>Каноны и мастера.</p></div>
+        </div>
+        <div class="history-card">
+          <img src="images/Ярмарка.jpg" alt="Ярмарки">
+          <div class="body"><h4>Ярмарки Красноуфимска</h4><p>Торговые ряды и история.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== СТРАНИЦА "МАСТЕРА" (каталог) ===== -->
+<div id="page-masters" class="page">
+  <section>
+    <div class="container">
+      <h2 class="section-title">Мастера</h2>
+      <div class="masters-grid" id="mastersGrid">
+        <!-- Карточки генерируются из JS -->
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== СТРАНИЦА "МАРШРУТЫ" ===== -->
+<div id="page-routes" class="page">
+  <section>
+    <div class="container">
+      <h2 class="section-title">Маршруты творчества</h2>
+      <div class="route-card">
+        <div class="route-map" style="background-image: url('https://picsum.photos/seed/ceramic_route/200/150');"></div>
+        <div style="flex:1;"><h3>Керамика и дерево</h3><p>Мастерские, где можно попробовать гончарное дело и резьбу.</p><span class="meta"><i class="far fa-clock"></i> ~3 часа</span></div>
+        <a href="#" class="btn btn-outline">Сохранить</a>
+      </div>
+      <div class="route-card">
+        <div class="route-map" style="background-image: url('https://picsum.photos/seed/old_believer/200/150');"></div>
+        <div style="flex:1;"><h3>По следам старообрядцев</h3><p>Иконопись, утварь, история.</p><span class="meta"><i class="far fa-clock"></i> ~4 часа</span></div>
+        <a href="#" class="btn btn-outline">Сохранить</a>
+      </div>
+      <div class="route-card">
+        <div class="route-map" style="background-image: url('https://picsum.photos/seed/souvenir/200/150');"></div>
+        <div style="flex:1;"><h3>Сувениры за 3 часа</h3><p>Быстрые мастер-классы и покупка изделий.</p><span class="meta"><i class="far fa-clock"></i> ~2.5 часа</span></div>
+        <a href="#" class="btn btn-outline">Сохранить</a>
+      </div>
+      <div style="margin-top:30px;"><a href="#" class="btn btn-primary"><i class="fas fa-route"></i> Построить свой маршрут</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== СТРАНИЦА "ИСТОРИЯ РЕМЁСЕЛ" ===== -->
+<div id="page-history" class="page">
+  <section>
+    <div class="container">
+      <h2 class="section-title">История ремёсел</h2>
+
+      <!-- Блок 1: Статьи с фото (Марийские промыслы, Иконопись, Ярмарки) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px;">
+        
+        <!-- Карточка 1: Марийские промыслы -->
+        <div style="background:white; border-radius:24px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border-color);">
+          <img src="images/Марий.jpg" alt="Марийские промыслы" style="width:100%; height:200px; object-fit:cover;">
+          <div style="padding:20px;">
+            <h3 style="color:var(--accent-dark); margin-bottom:10px;">Марийские промыслы</h3>
+            <p style="color:#4d4a44; font-size:0.95rem;">Традиции марийского народа в районе: вышивка, плетение, орнамент. Мастера бережно хранят технологии, переданные предками.</p>
+          </div>
+        </div>
+
+        <!-- Карточка 2: Иконопись старообрядцев -->
+        <div style="background:white; border-radius:24px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border-color);">
+          <img src="images/Иконопись.jpg" alt="Иконопись старообрядцев" style="width:100%; height:200px; object-fit:cover;">
+          <div style="padding:20px;">
+            <h3 style="color:var(--accent-dark); margin-bottom:10px;">Иконопись старообрядцев</h3>
+            <p style="color:#4d4a44; font-size:0.95rem;">В Красноуфимске сохранились уникальные иконы. Мастерские продолжают традиции, используя древние каноны и техники.</p>
+          </div>
+        </div>
+
+        <!-- Карточка 3: Ярмарочная культура -->
+        <div style="background:white; border-radius:24px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border-color);">
+          <img src="images/Ярмарка.jpg" alt="Ярмарочная культура" style="width:100%; height:200px; object-fit:cover;">
+          <div style="padding:20px;">
+            <h3 style="color:var(--accent-dark); margin-bottom:10px;">Ярмарочная культура</h3>
+            <p style="color:#4d4a44; font-size:0.95rem;">Гостиные ряды на улице Куйбышева, 3 — главный свидетель ярмарочной истории Красноуфимска. Двухэтажное здание помнит и звон монет, и аплодисменты театра, и свет кинопроектора.</p>
+            <a href="https://www.bibl-krasnoufimsk.ru/index.php/kraevedy/materialy-v-gankina/istoriya-krasnoufimska/46-yarmarki-krasnoufimskogo-uezda" target="_blank" style="color:var(--accent); font-weight:500; text-decoration:none;">Подробнее о ярмарках →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Блок 3: Современные мастера и традиции -->
+      <div style="background:white; border-radius:30px; padding:30px; box-shadow:var(--shadow); border:1px solid var(--border-color);">
+        <h3 style="color:var(--accent-dark); margin-bottom:15px;">🔗 Современные мастера и традиции</h3>
+        <p style="color:#4d4a44; margin-bottom:15px;">Сегодня в Красноуфимске живут и творят мастера, которые продолжают вековые традиции. Их работы — это связь прошлого и настоящего, живое наследие для будущих поколений.</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom:10px;">• <strong>Наталья Пантелеева</strong> — печатные пряники «Красноуфимский гостинец»</li>
+          <li style="margin-bottom:10px;">• <strong>Елена Илюшкина</strong> — марийские танцы и фольклор</li>
+          <li style="margin-bottom:10px;">• <strong>Мастера гончарного дела</strong> — керамика и глина</li>
+        </ul>
+        <a href="https://ksk66.ru/2026/06/24/сделано-в-красноуфимске-творения-кра/" target="_blank" style="color:var(--accent); font-weight:500; text-decoration:none;">Посмотреть работы современных мастеров →</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== СТРАНИЦА "СТАТЬ МАСТЕРОМ" ===== -->
+<div id="page-apply" class="page">
+  <section>
+    <div class="container">
+      <h2 class="section-title">Стать мастером</h2>
+      <div style="background:white; border-radius:30px; padding:30px; box-shadow:var(--shadow); border:1px solid var(--border-color);">
+        <p style="margin-bottom:25px;">Заполните форму, и мы свяжемся с вами. После модерации ваша страница появится на сайте.</p>
+        <form id="applyForm">
+          <div class="form-group"><label>Имя *</label><input type="text" required></div>
+          <div class="form-group"><label>Телефон, email, соцсети</label><input type="text"></div>
+          <div class="form-group"><label>Вид ремесла, специализация</label><input type="text"></div>
+          <div class="form-group"><label>Локация (адрес, возможность приёма гостей)</label><input type="text"></div>
+          <div class="form-group"><label>Описание, история, традиции</label><textarea"></textarea></div>
+          <div class="form-group"><label>Фото портфолио (3–5 фото)</label><input type="file" accept="image/*" multiple></div>
+          <div class="form-group"><label>Готовность к мастер-классам</label><select><option>Да</option><option>Нет</option></select></div>
+          <div class="form-group"><label><input type="checkbox"> Согласие на обработку данных и публикацию</label></div>
+          <button type="submit" class="btn btn-primary">Отправить заявку</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== СТРАНИЦА "КОНТАКТЫ" ===== -->
+<div id="page-contacts" class="page">
+  <section>
+    <div class="container">
+      <h2 class="section-title">Контакты</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        
+        <!-- ЛЕВАЯ КОЛОНКА: Контакты и буклет -->
+        <div>
+          <!-- Контакты проекта -->
+          <div style="background:white; border-radius:30px; padding:30px; box-shadow:var(--shadow); border:1px solid var(--border-color); margin-bottom:25px;">
+            <h3 style="color:var(--accent-dark); margin-bottom:20px;">📌 Свяжитесь с нами</h3>
+            
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+              <i class="fas fa-envelope" style="font-size:1.5rem; color:var(--accent); width:30px;"></i>
+              <div>
+                <div style="font-weight:600; font-size:0.85rem; color:#6b6258;">Email</div>
+                <a href="mailto:info@ryadom.ru" style="color:var(--accent-dark); text-decoration:none;">info@ryadom.ru</a>
+              </div>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+              <i class="fas fa-phone" style="font-size:1.5rem; color:var(--accent); width:30px;"></i>
+              <div>
+                <div style="font-weight:600; font-size:0.85rem; color:#6b6258;">Телефон</div>
+                <a href="tel:+79991234567" style="color:var(--accent-dark); text-decoration:none;">8 800 555-35-35</a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Буклет с QR-кодом -->
+          <div style="background:white; border-radius:30px; padding:30px; box-shadow:var(--shadow); border:1px solid var(--border-color); text-align:center;">
+            <h3 style="color:var(--accent-dark); margin-bottom:10px;">📖 Буклет проекта</h3>
+            <p style="color:#4d4a44; font-size:0.95rem; margin-bottom:20px;">Скачайте наш буклет и познакомьтесь с проектом поближе.</p>
+            
+            <!-- QR-код (заглушка) -->
+            <div style="width:150px; height:150px; margin:0 auto 20px; background:#f0ebe4; border-radius:16px; display:flex; align-items:center; justify-content:center; border:2px dashed var(--accent-light);">
+              <div style="text-align:center; color:#6b6258; font-size:0.8rem;">
+                <i class="fas fa-qrcode" style="font-size:3rem; color:var(--accent); display:block; margin-bottom:8px;"></i>
+                QR-код<br>на сайт
+              </div>
+            </div>
+            
+            <a href="#" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:10px;">
+              <i class="fas fa-file-pdf"></i> Скачать буклет (PDF)
+            </a>
+            <p style="font-size:0.8rem; color:#6b6258; margin-top:10px;">Формат PDF, 2.5 МБ</p>
+          </div>
+        </div>
+        
+        <!-- ПРАВАЯ КОЛОНКА: Форма обратной связи -->
+        <div style="background:white; border-radius:30px; padding:30px; box-shadow:var(--shadow); border:1px solid var(--border-color);">
+          <h3 style="color:var(--accent-dark); margin-bottom:8px;">✉️ Напишите нам</h3>
+          <p style="color:#6b6258; font-size:0.95rem; margin-bottom:20px;">Задайте вопрос, предложите сотрудничество или поделитесь идеей.</p>
+          
+          <form id="contactForm" onsubmit="event.preventDefault(); alert('✅ Спасибо! Ваше сообщение отправлено.'); this.reset();">
+            <div class="form-group">
+              <label for="contactName">Ваше имя *</label>
+              <input type="text" id="contactName" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="contactEmail">Email *</label>
+              <input type="email" id="contactEmail" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="contactSubject">Тема</label>
+              <select id="contactSubject">
+                <option value="">Выберите тему...</option>
+                <option value="question">Вопрос по проекту</option>
+                <option value="master">Хочу стать мастером</option>
+                <option value="cooperation">Сотрудничество</option>
+                <option value="other">Другое</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="contactMessage">Сообщение *</label>
+              <textarea id="contactMessage" placeholder="Расскажите, что вас интересует..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label style="font-weight:400; font-size:0.9rem;">
+                <input type="checkbox" required> Я согласен на обработку персональных данных
+              </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width:100%;">
+              <i class="fas fa-paper-plane"></i> Отправить сообщение
+            </button>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== СТРАНИЦА "ПЕРСОНАЛЬНАЯ СТРАНИЦА МАСТЕРА" ===== -->
+<div id="page-master-detail" class="page">
+  <section>
+    <div class="container">
+      <!-- Кнопка назад -->
+      <button onclick="switchPage('page-masters')" style="background:none; border:none; color:var(--accent); font-size:1rem; cursor:pointer; margin-bottom:20px;">
+        <i class="fas fa-arrow-left"></i> Назад к мастерам
+      </button>
+      
+      <!-- Шапка мастера -->
+      <div id="masterHeader" style="background:white; border-radius:30px; padding:30px; box-shadow:var(--shadow); border:1px solid var(--border-color); margin-bottom:25px;">
+        <div style="display:flex; flex-wrap:wrap; gap:25px; align-items:center;">
+          <div id="masterAvatar" style="width:150px; height:150px; border-radius:50%; background:#d5c9bb; background-size:cover; background-position:center; flex-shrink:0; border:3px solid var(--accent-light);"></div>
+          <div style="flex:1;">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
+              <h2 id="masterName" style="font-size:2rem; color:var(--accent-dark);">Наталья Пантелеева</h2>
+            </div>
+            <div id="masterCraft" style="font-size:1.2rem; color:var(--accent); font-weight:500; margin:6px 0;">Печатные пряники</div>
+            <div id="masterLocation" style="color:#6b6258;"><i class="fas fa-map-pin"></i> г. Красноуфимск, ул. Советская, 38</div>
+            
+            <!-- Мини-карта -->
+            <div id="masterMiniMap" style="margin-top:12px; width:100%; max-width:300px; height:60px; background:#e8e0d7; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#6b6258; font-size:0.85rem; border:1px solid var(--border-color);">
+  <i class="fas fa-map" style="margin-right:8px;"></i> <span id="masterAddress">ул. Советская, 38</span>
+</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Вкладки -->
+      <div style="background:white; border-radius:30px; box-shadow:var(--shadow); border:1px solid var(--border-color); overflow:hidden;">
+        <!-- Навигация по вкладкам -->
+
+        
+        <!-- Содержимое вкладок -->
+        <div style="padding:30px;">
+          
+          <!-- Вкладка 1: О мастере -->
+          <div id="tab-about" class="tab-content active">
+            <h3 style="color:var(--accent-dark); margin-bottom:15px;">О мастере</h3>
+            <p id="masterAbout" style="color:#4d4a44; line-height:1.7; margin-bottom:20px;">
+              Мир удивительных пряников в Красноуфимске - "ПряничОК"
+Красноуфимские печатные пряники. Это здесь! «ПряничОК» рад встрече с вами! Наша пряничная - уютный уголок, где витает аромат сладостей и счастья. Приходите в мастерскую «Мир удивительных пряников» и выбирайте, что пожелаете! «ПряничОК» - это не просто магазинчик, это целый мир, где вас ждут: - легендарные печатные пряники «Красноуфимский гостинец» с разными начинками, - творческие мастер-классы, - сладкие пряничные подарки и украшения на заказ, - яркие досуговые мероприятия по вашему выбору. Мы ждём вас ежедневно с 9:00 до 17:30. г. Красноуфимск, ул. Советская, 38, 2-й павильон. Заказы - по т. 8-909-009-55-43, Наталья
+
+            </p>
+            
+           
+          
+          <!-- Вкладка 2: Изделия -->
+          <div id="tab-products" class="tab-content">
+            <h3 style="color:var(--accent-dark); margin-bottom:15px;">Изделия</h3>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:20px;">
+              <div style="background:#f5f0ea; border-radius:16px; overflow:hidden; text-align:center; border:1px solid var(--border-color);">
+                <div style="height:150px; background:#d5c9bb; background-image:url('https://picsum.photos/seed/product1/300/300'); background-size:cover; background-position:center;"></div>
+                <div style="padding:15px;">
+                  <div style="font-weight:600;">Пряник «Гостинец»</div>
+                  <div style="color:var(--accent); font-size:1.1rem; font-weight:700;">350 ₽</div>
+                  <button style="margin-top:8px; background:var(--accent); color:white; border:none; padding:6px 16px; border-radius:30px; cursor:pointer; font-size:0.8rem;">
+                    <i class="far fa-heart"></i> В избранное
+                  </button>
+                </div>
+              </div>
+              <div style="background:#f5f0ea; border-radius:16px; overflow:hidden; text-align:center; border:1px solid var(--border-color);">
+                <div style="height:150px; background:#d5c9bb; background-image:url('https://picsum.photos/seed/product2/300/300'); background-size:cover; background-position:center;"></div>
+                <div style="padding:15px;">
+                  <div style="font-weight:600;">Набор пряников</div>
+                  <div style="color:var(--accent); font-size:1.1rem; font-weight:700;">850 ₽</div>
+                  <button style="margin-top:8px; background:var(--accent); color:white; border:none; padding:6px 16px; border-radius:30px; cursor:pointer; font-size:0.8rem;">
+                    <i class="far fa-heart"></i> В избранное
+                  </button>
+                </div>
+              </div>
+              <div style="background:#f5f0ea; border-radius:16px; overflow:hidden; text-align:center; border:1px solid var(--border-color);">
+                <div style="height:150px; background:#d5c9bb; background-image:url('https://picsum.photos/seed/product3/300/300'); background-size:cover; background-position:center;"></div>
+                <div style="padding:15px;">
+                  <div style="font-weight:600;">Пряник с сюрпризом</div>
+                  <div style="color:var(--accent); font-size:1.1rem; font-weight:700;">500 ₽</div>
+                  <button style="margin-top:8px; background:var(--accent); color:white; border:none; padding:6px 16px; border-radius:30px; cursor:pointer; font-size:0.8rem;">
+                    <i class="far fa-heart"></i> В избранное
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Вкладка 3: Мастер-классы -->
+          <div id="tab-masterclasses" class="tab-content">
+            <h3 style="color:var(--accent-dark); margin-bottom:15px;">Мастер-классы</h3>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px;">
+              <div style="background:#f5f0ea; border-radius:16px; padding:20px; border:1px solid var(--border-color);">
+                <h4 style="color:var(--accent-dark);">Роспись пряников</h4>
+                <div style="color:#6b6258; font-size:0.9rem; margin:6px 0;">
+                  <i class="far fa-calendar"></i> 27 июня, 14:00
+                </div>
+                <div style="color:#6b6258; font-size:0.9rem;">
+                  <i class="fas fa-users"></i> Осталось 5 мест
+                </div>
+                <div style="font-weight:700; color:var(--accent-dark); font-size:1.2rem; margin:10px 0;">600 ₽</div>
+                <button class="btn btn-primary" style="width:100%; text-align:center;">
+                  <i class="fas fa-pencil-alt"></i> Записаться
+                </button>
+              </div>
+              <div style="background:#f5f0ea; border-radius:16px; padding:20px; border:1px solid var(--border-color);">
+                <h4 style="color:var(--accent-dark);">Печатный пряник</h4>
+                <div style="color:#6b6258; font-size:0.9rem; margin:6px 0;">
+                  <i class="far fa-calendar"></i> 28 июня, 11:00
+                </div>
+                <div style="color:#6b6258; font-size:0.9rem;">
+                  <i class="fas fa-users"></i> Осталось 8 мест
+                </div>
+                <div style="font-weight:700; color:var(--accent-dark); font-size:1.2rem; margin:10px 0;">800 ₽</div>
+                <button class="btn btn-primary" style="width:100%; text-align:center;">
+                  <i class="fas fa-pencil-alt"></i> Записаться
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Вкладка 4: Отзывы -->
+          <div id="tab-reviews" class="tab-content">
+            <h3 style="color:var(--accent-dark); margin-bottom:15px;">Отзывы</h3>
+            
+            <!-- Форма отзыва -->
+            <div style="background:#f5f0ea; border-radius:16px; padding:20px; margin-bottom:25px;">
+              <h4 style="color:var(--accent-dark); margin-bottom:10px;">Оставить отзыв</h4>
+              <form onsubmit="event.preventDefault(); alert('✅ Спасибо за отзыв!'); this.reset();">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <input type="text" placeholder="Ваше имя" style="padding:10px 14px; border:1px solid var(--border-color); border-radius:12px;" required>
+                  <input type="email" placeholder="Email" style="padding:10px 14px; border:1px solid var(--border-color); border-radius:12px;" required>
+                </div>
+                <textarea placeholder="Ваш отзыв..." style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:12px; min-height:80px; margin-top:10px;" required></textarea>
+                <button type="submit" class="btn btn-primary" style="margin-top:10px;">Отправить отзыв</button>
+              </form>
+              <p style="font-size:0.8rem; color:#6b6258; margin-top:8px;">* Отзывы появляются после проверки модератором</p>
+            </div>
+            
+            <!-- Список отзывов -->
+            <div style="display:grid; gap:15px;">
+              <div style="background:white; border-radius:16px; padding:16px; border:1px solid var(--border-color);">
+                <div style="font-weight:600;">Анна С.</div>
+                <div style="color:#6b6258; font-size:0.85rem;">⭐️⭐️⭐️⭐️⭐️ — 5 июня 2026</div>
+                <p style="color:#4d4a44; margin-top:6px;">Замечательный мастер-класс! Наталья всё подробно объясняет, очень душевная атмосфера. Пряники получились красивыми и вкусными!</p>
+              </div>
+              <div style="background:white; border-radius:16px; padding:16px; border:1px solid var(--border-color);">
+                <div style="font-weight:600;">Дмитрий К.</div>
+                <div style="color:#6b6258; font-size:0.85rem;">⭐️⭐️⭐️⭐️⭐️ — 3 июня 2026</div>
+                <p style="color:#4d4a44; margin-top:6px;">Отличный опыт! Приехали с семьёй, всем очень понравилось. Теперь пряники печём сами дома.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Вкладка 5: История ремесла -->
+          <div id="tab-history" class="tab-content">
+            <h3 style="color:var(--accent-dark); margin-bottom:15px;">История ремесла</h3>
+            <div style="background:#f5f0ea; border-radius:16px; padding:20px;">
+              <p style="color:#4d4a44; line-height:1.7;">
+                <strong>Пряничное дело на Урале</strong> — традиция, уходящая корнями в XIX век. 
+                Красноуфимские печатные пряники славились на всю Пермскую губернию. 
+                Наталья Пантелеева продолжает эту традицию, используя старинные рецепты и деревянные доски для печати. 
+                Её мастерская «ПряничОК» — это мост между прошлым и настоящим, где каждый может прикоснуться к истории.
+              </p>
+              <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+                <span style="background:var(--accent); color:white; padding:4px 14px; border-radius:30px; font-size:0.85rem;">Традиции XIX века</span>
+                <span style="background:var(--accent); color:white; padding:4px 14px; border-radius:30px; font-size:0.85rem;">Уральские пряники</span>
+                <span style="background:var(--accent); color:white; padding:4px 14px; border-radius:30px; font-size:0.85rem;">Печатные формы</span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== ФУТЕР ===== -->
+<footer>
+  <div class="container footer-grid">
+    <div><strong>РяДОМ</strong><br>Маршруты творчества</div>
+    <div>
+      <a href="#"><i class="fab fa-vk"></i> VK</a><br>
+      <a href="#">Буклет (PDF)</a><br>
+      <a href="#">Политика конфиденциальности</a>
+    </div>
+    <div>
+      <p><i class="fas fa-envelope"></i> info@ryadom.ru</p>
+      <p><i class="fas fa-phone"></i> 8 800 555-35-35</p>
+      <p>© 2026 РяДОМ</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ===== Навигация (переключение страниц) =====
+  function switchPage(pageId) {
+    // Скрыть все страницы
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Показать нужную
+    const target = document.getElementById(pageId);
+    if (target) target.classList.add('active');
+    // Обновить активную ссылку в меню
+    document.querySelectorAll('#navMenu a').forEach(link => link.classList.remove('active'));
+    document.querySelector(`#navMenu a[data-page="${pageId}"]`)?.classList.add('active');
+    // Закрыть мобильное меню
+    document.getElementById('navMenu').classList.remove('open');
+    // Скролл наверх
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Обработчики кликов по ссылкам меню
+  document.querySelectorAll('#navMenu a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const pageId = this.dataset.page;
+      if (pageId) switchPage(pageId);
+    });
+  });
+
+  // Бургер-меню
+  function toggleMenu() {
+    document.getElementById('navMenu').classList.toggle('open');
+  }
+
+  // ===== Генерация карточек мастеров (для страницы "Мастера") =====
+  // ===== Данные мастеров (правильная структура) =====
+const masters = [
+  { 
+    name: 'Наталья Пантелеева', 
+    craft: 'Печатные пряники', 
+    location: 'Красноуфимск', 
+    img: 'images/Наталья Пантелеева.jpg',
+    about: 'Мир удивительных пряников в Красноуфимске - "ПряничОК". Красноуфимские печатные пряники. Это здесь! «ПряничОК» рад встрече с вами! Наша пряничная - уютный уголок, где витает аромат сладостей и счастья. Приходите в мастерскую «Мир удивительных пряников» и выбирайте, что пожелаете! «ПряничОК» - это не просто магазинчик, это целый мир, где вас ждут: - легендарные печатные пряники «Красноуфимский гостинец» с разными начинками, - творческие мастер-классы, - сладкие пряничные подарки и украшения на заказ, - яркие досуговые мероприятия по вашему выбору. Мы ждём вас ежедневно с 9:00 до 17:30. г. Красноуфимск, ул. Советская, 38, 2-й павильон. Заказы - по т. 8-909-009-55-43, Наталья',
+    address: 'ул. Советская, 38 (2-й павильон)',
+    status: 'Готов принимать гостей',
+    history: 'Пряничное дело на Урале — традиция, уходящая корнями в XIX век. Красноуфимские печатные пряники славились на всю Пермскую губернию. Наталья Пантелеева продолжает эту традицию, используя старинные рецепты и деревянные доски для печати.',
+    // 👇 ФОТО ПРОЦЕССА ДЛЯ НАТАЛЬИ
+    processPhotos: [
+      'images/пряник1.jpg',
+      'images/пряник2.jpg',
+      'images/пряник3.jpg'
+    ]
+  },
+  { 
+    name: 'Елена Илюшкина', 
+    craft: 'Марийские танцы', 
+    location: 'Красноуфимск', 
+    img: 'images/Марийские танцы.jpg',
+    about: '🔥 Хочешь почувствовать ритм марийской культуры? 🔥 Приходи на площадь Искусств (г.Красноуфимск) 27 июня! Илюшкина Елена Геннадьевна, хореограф, руководителем высшей квалификационной категории образцовых коллективов: студии эстрадного танца «Джаз-Импровиз» и «Театра моды «Импровиз», финно-угорского любительского общества «Душа». Приглашаем на мастер‑класс по основам марийских танцев! Ты освоишь базовые шаги, выразительные положения рук и яркую марийскую дробь («тывырдык»), научишься чувствовать национальный ритм и соберёшь свою первую танцевальную связку. Погрузись в традиции и раскрой в себе энергию народного танца — приходи! 💃',
+    address: 'Площадь Искусств',
+    status: 'Готов принимать гостей',
+    history: 'Марийские танцы — это древнее искусство, которое передаётся из поколения в поколение. Елена Илюшкина продолжает традиции марийского народа, сохраняя аутентичные движения и костюмы.',
+    // 👇 ФОТО ПРОЦЕССА ДЛЯ ЕЛЕНЫ
+    processPhotos: [
+      'images/танец1.jpg',
+      'images/танец2.jpg',
+      'images/танец3.jpg'
+    ]
+  },
+  { 
+    name: 'Керамика с Урала', 
+    craft: 'Гончарное дело', 
+    location: 'Красноуфимск', 
+    img: 'images/Керамика с Урала.jpg',
+    about: 'Керамика с Урала. 27 июня. День города Красноуфимска на площади Искусств. Приглашаю вас на уличный мастер-класс по керамике! Если вы всегда хотели поработать с глиной и сделать свою личную авторскую тарелку/кружку/фигурку, добро пожаловать. Стоимость участия: небольшая фигурка - 400 рублей, тарелка/кружка - 1000 рублей. Все материалы включены. После лепки ваши изделия ждут: сушка и два обжига. Готовность работ 3-4 недели. Для записи и дополнительной информации напишите в личные сообщения - 89120411668.',
+    address: 'Площадь Искусств',
+    status: 'Готов принимать гостей',
+    history: 'Гончарное ремесло на Урале имеет многовековую историю. Мастерская «Керамика с Урала» продолжает традиции уральских гончаров, используя местные глины и старинные технологии обжига.',
+    // 👇 ФОТО ПРОЦЕССА ДЛЯ КЕРАМИКИ
+    processPhotos: [
+      'images/керамика1.jpg',
+      'images/керамика2.jpg',
+      'images/керамика3.jpg'
+    ]
+  },
+  { 
+    name: 'Кожевенная школа', 
+    craft: 'Кожевенное ремесло', 
+    location: 'Красноуфимск', 
+    img: 'images/Кожевенная школа.jpg',
+    about: 'Кожевенная школа приглашает вас на увлекательный мастер-класс! В День города окунитесь в мир творчества и создайте своими руками стильный браслет из натуральной кожи! Место: Парк им. Блюхера. Дата: 27 июня с 10:00. Все материалы предоставляются! Это отличная возможность: познакомиться с основами работы с кожей, пообщаться в теплой компании единомышленников, унести с собой уникальный аксессуар, сделанный своими руками. Приходите сами, зовите друзей – будет интересно, душевно и творчески! Ждём вас!',
+    address: 'Парк им. Блюхера',
+    status: 'Готов принимать гостей',
+    history: 'Кожевенное ремесло — одно из древнейших на Урале. Кожевенная школа возрождает традиции, передавая мастерство новым поколениям.',
+    // 👇 ФОТО ПРОЦЕССА ДЛЯ КОЖИ
+    processPhotos: [
+      'images/кожа1.jpg',
+      'images/кожа2.jpg',
+      'images/кожа3.jpg'
+    ]
+  }
+];
+
+function openMasterPage(master) {
+  // Заполняем шапку мастера
+  document.getElementById('masterAvatar').style.backgroundImage = `url('${master.img}')`;
+  document.getElementById('masterName').textContent = master.name;
+  document.getElementById('masterCraft').textContent = master.craft;
+  document.getElementById('masterLocation').textContent = `г. ${master.location}`;
+  
+  // Адрес в мини-карте
+  document.getElementById('masterAddress').textContent = master.address;
+  
+  // Статус
+  const statusBadge = document.getElementById('masterStatus');
+  if (statusBadge) {
+    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ${master.status}`;
+  }
+  
+  // Заполняем вкладку "О мастере"
+  document.getElementById('masterAbout').textContent = master.about;
+  
+  // 👇 ДИНАМИЧЕСКИЕ ФОТО ПРОЦЕССА
+  const processContainer = document.getElementById('processPhotos');
+  if (processContainer && master.processPhotos) {
+    processContainer.innerHTML = ''; // Очищаем контейнер
+    master.processPhotos.forEach(photo => {
+      const div = document.createElement('div');
+      div.style.cssText = `
+        background: #d5c9bb;
+        height: 300px;
+        border-radius: 16px;
+        background-image: url('${photo}');
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      `;
+      processContainer.appendChild(div);
+    });
+  }
+  
+  // Заполняем вкладку "История ремесла"
+  const historyContent = document.querySelector('#tab-history p');
+  if (historyContent) {
+    historyContent.textContent = master.history;
+  }
+  
+  // Обновляем название ремесла в истории
+  const historyTitle = document.querySelector('#tab-history h3');
+  if (historyTitle) {
+    historyTitle.textContent = `История ремесла: ${master.craft}`;
+  }
+  
+  // Переключаемся на страницу мастера
+  switchPage('page-master-detail');
+  
+  // Сбрасываем вкладки на первую
+  switchTab('tab-about');
+}
+
+// ===== Генерация карточек мастеров =====
+const grid = document.getElementById('mastersGrid');
+if (grid) {
+  masters.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'master-card';
+    card.innerHTML = `
+      <div class="avatar" style="background-image: url('${m.img}');"></div>
+      <div class="info">
+        <h4>${m.name}</h4>
+        <div class="craft">${m.craft}</div>
+        <div class="loc"><i class="fas fa-map-pin"></i> ${m.location}</div>
+      </div>
+    `;
+    // При клике открываем персональную страницу мастера
+    card.addEventListener('click', () => {
+      openMasterPage(m);
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ===== Функция открытия персональной страницы мастера =====
+function openMasterPage(master) {
+  // Заполняем шапку мастера
+  document.getElementById('masterAvatar').style.backgroundImage = `url('${master.img}')`;
+  document.getElementById('masterName').textContent = master.name;
+  document.getElementById('masterCraft').textContent = master.craft;
+  document.getElementById('masterLocation').textContent = `г. ${master.location}`;
+  
+  // 👇 АДРЕС В МИНИ-КАРТЕ
+  document.getElementById('masterAddress').textContent = master.address;
+  
+  // 👇 СТАТУС (исправлено: теперь ищем #masterStatus)
+  const statusBadge = document.getElementById('masterStatus');
+  if (statusBadge) {
+    statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ${master.status}`;
+  }
+  
+  // Заполняем вкладку "О мастере"
+  document.getElementById('masterAbout').textContent = master.about;
+  
+  // Заполняем вкладку "История ремесла"
+  const historyContent = document.querySelector('#tab-history p');
+  if (historyContent) {
+    historyContent.textContent = master.history;
+  }
+  
+  // Обновляем название ремесла в истории
+  const historyTitle = document.querySelector('#tab-history h3');
+  if (historyTitle) {
+    historyTitle.textContent = `История ремесла: ${master.craft}`;
+  }
+  
+  // Переключаемся на страницу мастера
+  switchPage('page-master-detail');
+  
+  // Сбрасываем вкладки на первую
+  switchTab('tab-about');
+}
+
+  // ===== Табы на персональной странице (демо) =====
+  // Для демонстрации мы не создаём отдельную страницу, но добавим обработку, если понадобится.
+  // (В реальном проекте это открывалось бы по клику на карточку.)
+
+  // Обработка формы (заглушка)
+  document.getElementById('applyForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('✅ Спасибо! Ваша заявка отправлена на модерацию.');
+    this.reset();
+  });
+
+  console.log('✅ Прототип "РяДОМ" загружен. Сайт информативный, с переключением страниц.');
+</script>
+
+</body>
+</html>
